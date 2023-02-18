@@ -2,9 +2,25 @@
  See the documentation for more options:
  https://github.com/jenkins-infra/pipeline-library/
 */
-buildPlugin(
-  useContainerAgent: true,
-  configurations: [
-    [platform: 'linux', jdk: 17], // use 'docker' if you have containerized tests
-    [platform: 'windows', jdk: 11],
-])
+pipeline {
+  agent any
+  
+  stages {
+    stage('Detect Language') {
+      steps {
+        languageDetector(
+          filePattern: '**/*.java', // Path to the files you want to detect language for
+          outputFile: 'languages.json' // Output file to store the detected languages
+        )
+      }
+    }
+    
+    stage('Print Language') {
+            steps {
+                sh "echo Detected language: ${env.LANGUAGE}"
+           
+            }
+        }
+  }
+}
+
